@@ -48,7 +48,8 @@ modules = {
 
 # Model connections
 connections = [
-    ['my_norm',        ['mix_magnitude', ]],
+    ['my_conv',        ['mix_magnitude', ]],
+    ['my_norm',        ['my_conv', ]],
     ['my_mask',        ['my_norm', ]],
     ['my_estimates',   ['my_mask', 'mix_magnitude']]
 ]
@@ -61,7 +62,7 @@ config = {
     'modules': modules,
     'connections': connections,
     'output': output,
-    'name': 'model'
+    'name': 'model_conv'
 }
 
 # Create model
