@@ -1,4 +1,9 @@
-# Add LPC computation here
+# wyc2112
+
+'''
+Calculates the compression size of LPC. Reads in a .wav file and a LPC coefficieent file
+and compares them to each other by printing out their shapes.
+'''
 
 print("Loading...")
 f = './data/test_mod/{}.wav'.format('0_0')

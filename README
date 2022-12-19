@@ -1,0 +1,39 @@
+wyc2112 William Cui
+
+18 December 2022
+
+Music Source Separation with Linear Predictive Coefficients
+
+Summary
+
+In this project we explored the use of Linear Predictive Coding (LPC) for encoding audio. LPC is an algorithm for finding the coefficients that estimate the characteristics of a source-filter model that produces audio. LPCs also have the potential to compress audio data, which could facilitate the creation and training of a music source separation system with limited resources. As a proof of concept, we built and trained a source separation system utilizing LPCs.
+
+Tools
+
+NUSSL https://github.com/nussl/nussl - Source Separation Library
+scikit-learn - ML Library
+museval - Source separation evaluation tool
+
+Directories and Executables
+
+data
+- data/test: Test data in .mp4 format
+- data/test_mod: Ground truth test data modified to separate stems out into 5 different .wav files
+- data/test_np: LPC coefficients of .wav stems
+- data/train: Train data
+
+compression_size.py - Calculates compression size of a .wav file versus a compressed file of LPC coefficients
+convert.py - Converts .mp4 files into 5 separate .wav stem files
+decode_lpc.py - Takes LPC coefficients and converts it into a .wav file
+eval.py - Evaluates a model based on a ground truth .wav stem and an outputted .wav stem and calculates signal-to-distortion ratio
+make_lpc.py - Converts .wav stem files into LPC coefficients and saves it into data/
+model_conv.py - Define convolutional model and training loop
+model_size.py - Script to print the architecture of a model, as well as the size
+test_model.py - Model pipeline end-to-end script
+
+Running test_model:
+>>> python3 test_model.py
+This will output the resulting .wav file into a file named result.wav
+
+More information:
+The training and test data is from the MUSDB16 dataset

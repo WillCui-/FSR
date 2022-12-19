@@ -1,14 +1,25 @@
+# wyc2112
+
+'''
+Takes LPC coefficients and converts them into a .wav file
+
+Contains several different functions for computing LPC.
+This file reads in an LPC coefficient numpy array and applies these functions
+to the array. This produces an output array that can be transformed back into
+.wav format.
+'''
+
 import numpy as np
 import scipy.io.wavfile
 
 
 from math import floor
-from numpy.random import randn 
+from numpy.random import randn
 from scipy.signal import lfilter, resample
 from scipy.signal.windows import hann
 
 
-def add_overlapping_blocks(B, R = 0.5):
+def add_overlapping_blocks(B, R=0.5):
     [count, nw] = B.shape
     step = floor(nw * R)
 
@@ -18,19 +29,21 @@ def add_overlapping_blocks(B, R = 0.5):
 
     for i in range(count):
         offset = i * step
-        x[offset : nw + offset] += B[i, :]
+        x[offset: nw + offset] += B[i, :]
 
     return x
 
+
 def run_source_filter(a, g, block_size):
-    src = np.sqrt(g)*randn(block_size, 1) # noise
-    
+    src = np.sqrt(g)*randn(block_size, 1)  # noise
+
     b = np.concatenate([np.array([-1]), a])
-    
-    x_hat = lfilter([1], b.T, src.T).T 
+
+    x_hat = lfilter([1], b.T, src.T).T
     return np.squeeze(x_hat)
 
-def lpc_decode(A, G, w, lowcut = 0):
+
+def lpc_decode(A, G, w, lowcut=0):
     [ne, n] = G.shape
     nw = len(w)
     [p, _] = A.shape
@@ -38,12 +51,13 @@ def lpc_decode(A, G, w, lowcut = 0):
     B_hat = np.zeros((n, nw))
 
     for i in range(n):
-        B_hat[i,:] = run_source_filter(A[:, i], G[:, i], nw)
+        B_hat[i, :] = run_source_filter(A[:, i], G[:, i], nw)
 
     # recover signal from blocks
-    x_hat = add_overlapping_blocks(B_hat);
-        
+    x_hat = add_overlapping_blocks(B_hat)
+
     return x_hat
+
 
 def lpc_to_wav(A, G, f):
     sample_rate = 8000
@@ -52,6 +66,7 @@ def lpc_to_wav(A, G, f):
 
     scipy.io.wavfile.write("{}.wav".format(f), 8000, xhat)
     print("Written to: {}.wav".format(f))
+
 
 X = np.load('./data/train_np/89_3.npy')
 
