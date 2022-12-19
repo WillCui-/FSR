@@ -146,7 +146,7 @@ def lpc_to_wav(A, G, f):
 
 # End LPC code
 
-model_name = './model_3000'
+model_name = './model_190'
 
 reloaded_dict = torch.load(model_name)
 

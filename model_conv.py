@@ -14,6 +14,9 @@ num_sources = 4  # how many sources to estimate
 mask_activation = 'sigmoid'  # activation function for masks
 num_audio_channels = 1  # number of audio channels
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print("Device: ", device)
+
 modules = {
     'mix_magnitude': {},
     'my_norm': {
@@ -23,7 +26,7 @@ modules = {
         'class': 'ConvolutionalStack2D',
         'args': {
             'in_channels': 1,
-            'channels': [3, 1],
+            'channels': [1, 1],
             'dilations': [1, 1],
             'filter_shapes': [3, 3],
             'residuals': [True, True]
@@ -137,8 +140,8 @@ train_closure = nussl.ml.train.closures.TrainClosure(
     loss_dictionary, optimizer, model
 )
 
-load_model = True
-target_model = './model_570'
+load_model = False
+target_model = './model_30'
 
 if load_model:
     print("Loading model {}".format(target_model))
@@ -146,6 +149,8 @@ if load_model:
 
     model = nussl.ml.SeparationModel(reloaded_dict['config'])
     model.load_state_dict(reloaded_dict['state_dict'])
+
+model.to(device)
 
 num_train = 100
 num_test = 50
@@ -169,7 +174,7 @@ for epoch in (pbar := tqdm(range(epochs))):
 
         training_loss += loss_output['loss']
 
-    if (epoch + 1) % 100 == 0:
+    if (epoch + 1) % 10 == 0:
         for j in range(num_test):
             data = format_np(np.load('./data/test_np/{}_0.npy'.format(j)))
             track1 = format_np(np.load('./data/test_np/{}_1.npy'.format(j)))
