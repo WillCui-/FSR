@@ -1,3 +1,15 @@
+# wyc2112
+
+'''
+Uses NUSSL to define the model and training loop
+
+Contains several modules defined in the NUSSL framework to create, 
+train, and validate a model during the training process.
+
+All processing happens in this file and the final model gets outputted 
+into the working directory.
+'''
+
 import numpy as np
 import nussl
 import os
@@ -9,7 +21,7 @@ from nussl.ml.train import BackwardsEvents
 from tqdm import tqdm
 
 # Model modules
-num_features = 101  
+num_features = 101
 num_sources = 4  # how many sources to estimate
 mask_activation = 'sigmoid'  # activation function for masks
 num_audio_channels = 1  # number of audio channels
@@ -77,7 +89,7 @@ data = {'mix_magnitude': mix_magnitude}
 output = model(data)
 
 # Save model
-#with tempfile.NamedTemporaryFile(suffix='.pth', delete=True) as f:
+# with tempfile.NamedTemporaryFile(suffix='.pth', delete=True) as f:
 #    loc = model.save(f.name)
 #    reloaded_dict = torch.load(f.name)
 #
@@ -87,6 +99,7 @@ output = model(data)
 #    new_model.load_state_dict(reloaded_dict['state_dict'])
 #
 #    print(new_model)
+
 
 class TrainClosure(Closure):
     """
@@ -118,9 +131,10 @@ class TrainClosure(Closure):
 
         return loss_
 
+
 def format_np(arr):
     return torch.from_numpy(np.expand_dims(np.expand_dims(arr.T, 0), 3)).float()
-        
+
 
 loss_dictionary = {
     'MSELoss': {
@@ -169,7 +183,7 @@ for epoch in (pbar := tqdm(range(epochs))):
         source = torch.stack([track1, track2, track3, track4], dim=4)
 
         item = {'mix_magnitude': data,
-        	'source_magnitudes': source}
+                'source_magnitudes': source}
         loss_output = train_closure(None, item)
 
         training_loss += loss_output['loss']
@@ -183,12 +197,13 @@ for epoch in (pbar := tqdm(range(epochs))):
             track4 = format_np(np.load('./data/test_np/{}_4.npy'.format(j)))
             source = torch.stack([track1, track2, track3, track4], dim=4)
             item = {'mix_magnitude': data,
-        	    'source_magnitudes': source}
+                    'source_magnitudes': source}
             output = model(item)
             loss_output = closure.compute_loss(output, item)
 
             test_loss += loss_output['loss']
-        print("Train Loss: {} Test Loss: {}".format(training_loss / num_train / 100, test_loss / num_test))
+        print("Train Loss: {} Test Loss: {}".format(
+            training_loss / num_train / 100, test_loss / num_test))
 
         training_loss, test_loss = 0, 0
 
