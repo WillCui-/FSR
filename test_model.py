@@ -1,3 +1,14 @@
+# wyc2112
+
+'''
+Model pipeline end-to-end script
+
+Runs the model on a pre-defined input file. Contains several functions
+to enable LPC computation, as well as NUSSL information to run the model.
+Outputs the result and decodes it intto .wav.
+Calculates time taken to run.
+'''
+
 import numpy as np
 import nussl
 import scipy.io.wavfile

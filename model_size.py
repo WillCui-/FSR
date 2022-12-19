@@ -1,3 +1,9 @@
+# wyc2112
+
+'''
+Script to print the architecture of a model, as well as the size
+'''
+
 import nussl
 import torch
 
